@@ -13,7 +13,7 @@ import numpy as np
 from skimage.io import imread
 from albumentations import Compose, Normalize, Resize
 
-
+'''
 import argparse
 
 parser = argparse.ArgumentParser(description='Eval methods')
@@ -28,7 +28,7 @@ args = parser.parse_args()
 logger = logging.getLogger(__name__)
 
 er.registry.register_all()
-
+'''
 
 def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="examples/exp"):
     cfg = import_config(config_path)
