@@ -29,7 +29,6 @@ COLOR_MAP = OrderedDict(
     Agricultural=(255, 195, 128),
 )
 
-
 LABEL_MAP = OrderedDict(
     Background=0,
     Building=1,
