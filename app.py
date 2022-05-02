@@ -1,4 +1,4 @@
-#from inference_app import evaluate
+from inference_app import evaluate
 import io
 import json
 import numpy as np
@@ -26,16 +26,17 @@ def hello():
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
-       # cls_map = evaluate(ckpt_path, config_path, False, img_path)
-        #file = request.files['file']
-        img = Image.open("./examples/example.png")
-        # gets the image and reads in binary
         image_binary = request.files['image'].read()
+        img = Image.open(io.BytesIO(image_binary))
+        cls_map = evaluate(ckpt_path, config_path, False, img=img)
+        #file = request.files['file']
+        # gets the image and reads in binary
         # converts the  binary to a base 64 string
-        image_string = base64.b64encode(image_binary)
-        #img_bytes = cls_map.read()
+        buffered = io.BytesIO()
+        cls_map.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue())
         #json_data = json.dumps(np.array(img).tolist())
-        return image_string
+        return img_str
 
 @app.route('/predict', methods=['GET'])
 def view():
@@ -43,7 +44,7 @@ def view():
     #file = request.files['file']
     incoming_img = request.json
     print("printed", incoming_img)
-    img = Image.open("./examples/example.png")
+    img = Image.open("./examples/example.jpeg")
     json_data = json.dumps(np.array(img).tolist())
     return jsonify({'img_id': 'map', 'img': json_data})
 

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 er.registry.register_all()
 
 
-def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="examples/exp"):
+def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="examples/exp", img=None):
     cfg = import_config(config_path)
     model_state_dict = torch.load(ckpt_path)
 
@@ -32,10 +32,14 @@ def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="ex
     vis_dir = os.path.join(log_dir, 'vis-{}'.format(os.path.basename(ckpt_path)))
     palette = np.array(list(COLOR_MAP.values())).reshape(-1).tolist()
     viz_op = VisualizeSegmm(vis_dir, palette)
-    try:
-        img = imread(img_path + '.png', pilmode='RGB')
-    except:
-        img = imread(img_path + '.jpeg', pilmode='RGB')
+    if img == None:
+        try:
+            img = imread(img_path + '.png', pilmode='RGB')
+        except:
+            img = imread(img_path + '.jpeg', pilmode='RGB')
+    else:
+            img = np.array(img.convert('RGB'))
+        
     
     transform = Compose([Resize(1024,1024),
                         Normalize(mean=(123.675, 116.28, 103.53),
