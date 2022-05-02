@@ -12,25 +12,12 @@ from ever.core.config import import_config
 import numpy as np
 from skimage.io import imread
 from albumentations import Compose, Normalize, Resize
-
-'''
-import argparse
-
-parser = argparse.ArgumentParser(description='Eval methods')
-parser.add_argument('--ckpt_path',  type=str,
-                    help='ckpt path', default='./log/deeplabv3p.pth')
-parser.add_argument('--config_path',  type=str,
-                    help='config path', default='baseline.deeplabv3p')
-parser.add_argument('--img_path',  type=str,
-                    help='img path', default='examples/exp')
-parser.add_argument('--tta',  type=bool,
-                    help='use tta', default=False)
-args = parser.parse_args()
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
 er.registry.register_all()
-'''
+
 
 def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="examples/exp"):
     cfg = import_config(config_path)
@@ -82,9 +69,10 @@ def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="ex
         pred = pred.argmax(dim=1).cpu()
 
         for clsmap in pred:
-            viz_op(clsmap.cpu().numpy().astype(np.uint8), 'exp_result.png')
+            result = viz_op(clsmap.cpu().numpy().astype(np.uint8), 'exp_result.png')
     print('finished')
     torch.cuda.empty_cache()
+    return result
 
 
 
@@ -101,6 +89,3 @@ def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="ex
     blob = transform(image)
     image = blob['image']
     return image"""
-
-if __name__ == '__main__':
-    evaluate(args.ckpt_path, args.config_path, args.tta, img_path=args.img_path)
