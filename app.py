@@ -28,23 +28,22 @@ def predict():
     if request.method == 'POST':
         image_binary = request.files['image'].read()
         img = Image.open(io.BytesIO(image_binary))
-        cls_map = evaluate(ckpt_path, config_path, False, img=img)
+        cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
         #file = request.files['file']
         # gets the image and reads in binary
         # converts the  binary to a base 64 string
         buffered = io.BytesIO()
         cls_map.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue())
+        img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
         #json_data = json.dumps(np.array(img).tolist())
-        return img_str
+        return jsonify({'img_id': 'map', 'img': img_str, 'ratio_dict': ratio_dict})
 
 @app.route('/predict', methods=['GET'])
 def view():
-    #cls_map = evaluate(ckpt_path, config_path, False, img_path)
+    cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img_path)
     #file = request.files['file']
-    incoming_img = request.json
-    print("printed", incoming_img)
-    img = Image.open("./examples/example.jpeg")
-    json_data = json.dumps(np.array(img).tolist())
-    return jsonify({'img_id': 'map', 'img': json_data})
+    buffered = io.BytesIO()
+    cls_map.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    return jsonify({'img_id': 'map', 'img': img_str, 'ratio_dict': ratio_dict})
 

@@ -18,7 +18,11 @@ class VisualizeSegmm(object):
         """
         y_pred = y_pred.astype(np.uint8)
         y_pred = y_pred.squeeze()
+        unique, counts = np.unique(y_pred, return_counts=True)
+        ratio_dict = dict(zip(unique, counts))
+        total_count = np.sum(counts).item() 
+        ratio_dict = {k.item():v.item()/total_count for k, v in ratio_dict.items()}
         color_y = Image.fromarray(y_pred)
         color_y.putpalette(self.palette)
         color_y.save(os.path.join(self.out_dir, filename))
-        return color_y
+        return color_y, ratio_dict

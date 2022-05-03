@@ -73,10 +73,10 @@ def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="ex
         pred = pred.argmax(dim=1).cpu()
 
         for clsmap in pred:
-            result = viz_op(clsmap.cpu().numpy().astype(np.uint8), 'exp_result.png')
+            result, ratio_dict = viz_op(clsmap.cpu().numpy().astype(np.uint8), 'exp_result.png')
     print('finished')
     torch.cuda.empty_cache()
-    return result
+    return result, ratio_dict
 
 
 
