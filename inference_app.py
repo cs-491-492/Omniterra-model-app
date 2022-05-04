@@ -77,19 +77,3 @@ def evaluate(ckpt_path, config_path='base.hrnetw32', use_tta=False, img_path="ex
     print('finished')
     torch.cuda.empty_cache()
     return result, ratio_dict
-
-
-
-
-"""def preprocess(img_path):
-    print(img_path)
-    image = imread(img_path)
-    transform = Compose([Normalize(mean=(123.675, 116.28, 103.53),
-                          std=(58.395, 57.12, 57.375),
-                          max_pixel_value=1, always_apply=True),
-                        er.preprocess.albu.ToTensor()
-
-                ])
-    blob = transform(image)
-    image = blob['image']
-    return image"""

@@ -20,13 +20,13 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 COLOR_MAP = OrderedDict(
-    Background=(255, 255, 255),
+    Background=(211,211,211),
     Building=(255, 0, 0),
     Road=(255, 255, 0),
     Water=(0, 0, 255),
     Barren=(159, 129, 183),
     Forest=(0, 255, 0),
-    Agricultural=(255, 195, 128),
+    Agricultural=(255, 165, 0),
 )
 
 LABEL_MAP = OrderedDict(

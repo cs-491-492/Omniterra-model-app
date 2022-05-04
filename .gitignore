@@ -322,4 +322,9 @@ pr.diff
 #model files
 *.pth
 
+#folders
+examples
+lulc
 
+
+Demo.ipynb
