@@ -39,12 +39,11 @@ def retrieve_cols():
     collection = [item for item in cursor] 
     keys = list(collection[0].keys())
     newKeys = keys[1:]
-    print(newKeys)
     new_collection = []
     for item in collection:
-        new_collection.append( {x:collection[x] for x in keys})
-    print(new_collection)
-    return jsonify({})
+        new_collection.append({x:item[x] for x in newKeys})
+    print(new_collection[0].keys())
+    return jsonify(new_collection)
    
 #  if request.method == 'GET':
        # cursor = db['test'].find({})
