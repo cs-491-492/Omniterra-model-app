@@ -1,10 +1,10 @@
-from inference_app import evaluate
+#from inference_app import evaluate
 import io
 import json
 import numpy as np
 from PIL import Image
 from flask import Flask, jsonify, request
-
+from bson import json_util
 from flask_cors import CORS
 import base64
 
@@ -32,40 +32,50 @@ def hello():
 
 
 
-@app.route('/retrieve_collection', methods=['POST, GET'])
+@app.route('/retrieve_collection', methods=['POST'])
 def retrieve_cols():
-    if request.method == 'POST':
-        cname = request.files['cname']
-        cursor = db[cname].find({})
-        return cursor
-    if request.method == 'GET':
-        cursor = db['test'].find({})
-        return cursor
-
-@app.route('/list_collections', methods=['POST, GET'])
+    cname = request.form['cname']
+    cursor = db[cname].find({})  
+    collection = [item for item in cursor] 
+    keys = list(collection[0].keys())
+    newKeys = keys[1:]
+    print(newKeys)
+    new_collection = []
+    for item in collection:
+        new_collection.append( {x:collection[x] for x in keys})
+    print(new_collection)
+    return jsonify({})
+   
+#  if request.method == 'GET':
+       # cursor = db['test'].find({})
+        #return cursor
+@app.route('/list_collections', methods=['GET'])
 def list_cols():
-    if request.method == 'POST':
-        clist = db.list_collection_names()
-        return jsonify(clist)
-    if request.method == 'GET':
-        clist = db.list_collection_names()
-        return jsonify(clist)
+    clist = db.list_collection_names()
+    return jsonify(clist)
+
+#     if request.method == 'POST':
+#        clist = db.list_collection_names()
+#        return jsonify(clist)
 
 @app.route('/predict', methods=['POST'])
 def predict():
     image_binary = request.files['image'].read()
     img = Image.open(io.BytesIO(image_binary))
-    cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
+    #cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
+    ratio_dict = [{'x': 'Water', 'y': 1}]
     buffered = io.BytesIO()
-    cls_map.save(buffered, format="PNG")
+    #cls_map.save(buffered, format="PNG")
+    img.save(buffered, format="PNG")
     img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
     print(ratio_dict)
     data = jsonify({'img': img_str, 'ratio_dict': ratio_dict})
     cname = request.form['cname']
+    print(cname)
     if cname != "":
         clist = db.list_collection_names()
         if cname not in clist:
-            db.add_collection(cname)
+            db.create_collection(cname)
         db[cname].insert_one({'img': img_str, 'ratio_dict': ratio_dict})
     return data
 
