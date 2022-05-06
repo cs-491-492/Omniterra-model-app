@@ -13,3 +13,4 @@ Useful links:
 
 [eo-learn](https://medium.com/sentinel-hub/land-cover-classification-with-eo-learn-part-1-2471e8098195)
 
+model weights can be installed from: https://drive.google.com/drive/folders/1xFn1d8a4Hv4il52hLCzjEy_TY31RdRtg
