@@ -7,6 +7,7 @@ from flask import Flask, jsonify, request
 from bson import json_util
 from flask_cors import CORS
 import base64 
+from utils.image_utils import add_transparent_layer
 
 import pymongo
 mongoclient = pymongo.MongoClient('mongodb://localhost:27017')
@@ -53,7 +54,8 @@ def predict():
     cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
     #ratio_dict = [{'x': 'Water', 'y': 1}]
     buffered = io.BytesIO()
-    cls_map.save(buffered, format="PNG")
+    img_painted = add_transparent_layer(img, cls_map)
+    img_painted.save(buffered, format="PNG")
     #img.save(buffered, format="PNG")
     img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
     print(ratio_dict)
