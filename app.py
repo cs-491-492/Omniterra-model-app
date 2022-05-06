@@ -1,4 +1,4 @@
-#from inference_app import evaluate
+from inference_app import evaluate
 import io
 import json
 import numpy as np
@@ -6,7 +6,7 @@ from PIL import Image
 from flask import Flask, jsonify, request
 from bson import json_util
 from flask_cors import CORS
-import base64
+import base64 
 
 import pymongo
 mongoclient = pymongo.MongoClient('mongodb://localhost:27017')
@@ -20,17 +20,6 @@ CORS(app)
 ckpt_path='./models/hrnetw32.pth'
 config_path='baseline.hrnetw32'
 img_path="/home/bozcomlekci/Downloads/img"
-
-@app.route('/')
-def hello():
-    if request.method == 'GET':
-        cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img_path)
-        buffered = io.BytesIO()
-        cls_map.save(buffered, format="PNG")
-        img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
-        return jsonify({'img_id': 'map', 'img': img_str, 'ratio_dict': ratio_dict})
-
-
 
 @app.route('/retrieve_collection', methods=['POST'])
 def retrieve_cols():
@@ -61,11 +50,11 @@ def list_cols():
 def predict():
     image_binary = request.files['image'].read()
     img = Image.open(io.BytesIO(image_binary))
-    #cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
-    ratio_dict = [{'x': 'Water', 'y': 1}]
+    cls_map, ratio_dict = evaluate(ckpt_path, config_path, False, img=img)
+    #ratio_dict = [{'x': 'Water', 'y': 1}]
     buffered = io.BytesIO()
-    #cls_map.save(buffered, format="PNG")
-    img.save(buffered, format="PNG")
+    cls_map.save(buffered, format="PNG")
+    #img.save(buffered, format="PNG")
     img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
     print(ratio_dict)
     data = jsonify({'img': img_str, 'ratio_dict': ratio_dict})
