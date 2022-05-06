@@ -39,7 +39,7 @@ LABEL_MAP = OrderedDict(
     Agricultural=6
 )
 
-LABEL_MAP = {0:'Background', 1:'Building', 2:'Road', 3:'Water', 4:'Barren', 5:'Forest', 6:'Agricultural'}
+INT_TO_LABEL = {0:'Background', 1:'Building', 2:'Road', 3:'Water', 4:'Barren', 5:'Forest', 6:'Agricultural'}
 LABEL_TO_HEX = {'Background': '#d3d3d3', 'Building': '#ff0000', 'Road': '#ffff00', 'Water': '#0000ff', 'Barren': '#a52a2a', 'Forest': '#00ff00', 'Agricultural': '#ffa500'}
 HEX_TO_HSL = {'#d3d3d3': 'hsl(0,0%,83%)', '#ff0000': 'hsl(0,100%,50%)', '#ffff00': 'hsl(60,100%,50%)', '#0000ff': 'hsl(240,100%,50%)', '#a52a2a': 'hsl(0,0%,40%)', '#00ff00': 'hsl(120,100%,50%)', '#ffa500': 'hsl(30,100%,50%)'}
 LABEL_TO_HSL = {'Background': 'hsl(0,0%,83%)', 'Building': 'hsl(120,0%,50%)', 'Road': 'hsl(60,100%,50%)', 'Water': 'hsl(240,100%,50%)', 'Barren': 'hsl(0,0%,40%)', 'Forest': 'hsl(120,100%,50%)', 'Agricultural': 'hsl(30,100%,50%)'}

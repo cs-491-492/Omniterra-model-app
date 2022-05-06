@@ -3,7 +3,7 @@ from dataclasses import replace
 from PIL import Image
 import numpy as np
 import os
-from data.dataset import COLOR_MAP, LABEL_MAP, LABEL_TO_HSL
+from data.dataset import COLOR_MAP, INT_TO_LABEL, LABEL_TO_HSL
 
 
 
@@ -11,7 +11,7 @@ from data.dataset import COLOR_MAP, LABEL_MAP, LABEL_TO_HSL
 def replace_labels( label_list, counts):
     new_label_list = []
     new_count_list = [0,0,0,0,0,0,0]
-    new_label_list = list(LABEL_MAP.values())
+    new_label_list = list(INT_TO_LABEL.values())
     for i in range(7):
         if i in label_list:
             new_count_list[i] = counts[np.where(label_list == i)[0]]
@@ -34,7 +34,6 @@ class VisualizeSegmm(object):
         y_pred = y_pred.squeeze()
         unique, counts = np.unique(y_pred, return_counts=True)
         unique, counts = replace_labels(unique , counts)
-        print(unique, counts)
         ratio_dict = dict(zip(unique, counts))
         total_count = np.sum(counts).item()
         ratio_dict = [{'id':k, 'label':k, 'value':round(int(v)/total_count,3),  "color": LABEL_TO_HSL[k] } for k, v in ratio_dict.items()]
