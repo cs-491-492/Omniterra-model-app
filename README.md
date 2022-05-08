@@ -16,9 +16,6 @@ Useful links:
 Model weights can be installed from [this link](https://drive.google.com/drive/folders/1xFn1d8a4Hv4il52hLCzjEy_TY31RdRtg). Transfer model weights files to `/models` folder.
 
 Running the model may require a conda environment. Conda environment specifications can be viewed from the `environment.yml` file and can be setup with:
-
-<pre>
- <p>conda env create -f environment.yml</p>
-</pre>
+`conda env create -f environment.yml`
 
 `
