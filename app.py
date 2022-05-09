@@ -9,12 +9,15 @@ from flask_cors import CORS
 import base64 
 from utils.image_utils import add_transparent_layer
 from utils.data_utils import ratio_to_category, get_images
+from bson.json_util import dumps
+from bson.json_util import loads
 
 import pymongo
 mongoclient = pymongo.MongoClient('mongodb://localhost:27017')
 #mongoclient.drop_database('test')
 #mongoclient.drop_database('segmentation')
 db = mongoclient['segmentation']
+db2 = mongoclient['map_data']
 
 app = Flask(__name__)
 CORS(app)
@@ -74,3 +77,37 @@ def predict():
     return data
 
 
+@app.route('/add_data', methods=['POST'])
+def add_data():
+    clist = db2.list_collection_names()
+    if 'data' not in clist:
+        db2.create_collection('data')
+        db2['data'].insert_one({'fields': [ { "name":"_geojson", "type":"geojson","format":"", "analyzerType":"GEOMETRY"},], 'rows': [] })
+    json_data = request.form['data']
+    cursor = db2['data'].find({}) 
+    collection = [item for item in cursor] 
+    collection[0]['rows'].append(loads(json_data))
+    keys = list(collection[0].keys())
+    newKeys = keys[1:]
+    new_collection = []
+    for item in collection:
+        new_collection.append({x:item[x] for x in newKeys})
+    db2['data'].delete_many({})
+    db2['data'].insert_one(new_collection[0])
+    return jsonify({})
+   # .append([{"type": "Feature", "geometry": json.loads(json_data)}])
+
+@app.route('/get_map_data', methods=['GET'])
+def get_map_data():
+    clist = db2.list_collection_names()
+    if 'data' not in clist:
+        db2.create_collection('data')
+        db2['data'].insert_one({'fields': [ { "name":"_geojson", "type":"geojson","format":"", "analyzerType":"GEOMETRY"},], 'rows': [] })
+    cursor = db2['data'].find({})
+    collection = [item for item in cursor]
+    keys = list(collection[0].keys())
+    newKeys = keys[1:]
+    new_collection = []
+    for item in collection:
+        new_collection.append({x:item[x] for x in newKeys})
+    return jsonify(new_collection)
