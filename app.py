@@ -11,6 +11,7 @@ from utils.image_utils import add_transparent_layer
 from utils.data_utils import ratio_to_category, get_images
 from bson.json_util import dumps
 from bson.json_util import loads
+import uuid
 
 import pymongo
 mongoclient = pymongo.MongoClient('mongodb://localhost:27017')
@@ -85,8 +86,8 @@ def add_data():
         db2['data'].insert_one({'fields': [ { "name":"_geojson", "type":"geojson","format":"", "analyzerType":"GEOMETRY"},], 'rows': [] })
     json_data = request.form['data']
     cursor = db2['data'].find({}) 
-    collection = [item for item in cursor] 
-    collection[0]['rows'].append(loads(json_data))
+    collection = [item for item in cursor]
+    collection[0]['rows'].append([{"type": "Feature", "properties": {'Region id':  str(uuid.uuid4())}, "geometry": json.loads(json_data)}])
     keys = list(collection[0].keys())
     newKeys = keys[1:]
     new_collection = []
